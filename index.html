@@ -35,7 +35,121 @@ CS194 Project 5 - Nalin Chopra
 </br>
 <h2 id="overview" style="padding-top: 0.5em; padding-bottom: .5em;">Part 1: Image Warping & Mosaics</h2>
 <div style="padding-bottom: 0.75em; padding-top: 0em;">
-    <h3>Sample Images</h3>
+
+    <h3>Panoramas & Motivation</h3>
+
+    <p> A panorama is a wide view photo, normally created by stitching smaller images together. There are several 
+        different types of panoramas that can be created depending on what type of surface the stitched images are 
+        projected onto, perspective, cylindrical or spherical. Here I'll be showing results with perspective, or flat-plane projection panoramas.
+
+    </p>
+
+    <p>We'll soon see how we can use homographies, a relationship between images in the same plane, to achieve our goals in creating panoramas.</p>
+
+
+    <h3 style="padding-top: 0.5em;">Homographies</h3>
+
+    <p>
+        Any two images in the same planar space are related by a homography. For our case, we can represent one as a 3x3 matrix
+        using a homogenous coordinate system.
+    </p>
+
+    <div style="text-align: center;">
+        <img src="pt1_images/homography.jpg">
+    </div>
+
+    <p>By choosing corresponding points between our two images that are taken at different angles, we can 
+        find the homography that relates them. Then we can apply the homography as a matrix operation on 
+        one of the original images to project it onto the same surface or plane as our other image! </p>
+
+    <p> Since our homography matrix has 8 degrees of freedom, we need 8 equations to solve for it, which requires 4 coordinate pairs (x, y). However, 
+        in reality often there is error in noise and we can instead define many correspondences and find the best homography matrix that minimizes the error 
+        between all the points, using a least-squares approach.
+    </p>
+
+    <p> The least squares equation form for solving for each of the 8 variables of our homography matrix is as follows:</p>
+
+    <div style="text-align: center;">
+        <img src="pt1_images/homography_ls.jpg">
+    </div>
+
+    <p>For my images, I used around 15 points of correspondence. It's important to also note that least-squares 
+        is not very robust when it comes to dealing with outliers, so choosing many correspondence points will not only provide diminishing returns, 
+        but could also hurt results. Although at first we will choose these points manually, we'll soon see how we can automatically 
+        find correspondences.
+    </p>
+
+    <h3 style="padding-top: 0.5em;">Image Rectification Using Homographies</h3>
+
+    <p>We can first demonstrate one of the applications of homographies with image rectification. Given an image that is non-frontal planar, we can make it frontal 
+        planar by choosing correspondence points between corners of the image and a standard, frontal-planar rectangular set of coordinates (4 corners of a target image). The results are depicted here:
+
+    </p>
+
+
+    <h3 style="padding-top: 0.5em;">Putting it Together with Panoramas</h3>
+
+    <p>We can now use what we've learned to take three images from a scene and stitch them together into a panorama. We take the "center" image of the scene 
+        and choose it to be our anchor. We then define correspondences between the left and right image and the center image, and compute homographies for both
+        relationships. We can then use inverse warping to apply the homographies to a blank canvas along with the original image, and being careful to define a wide enough
+        canvas to encompass the entire net image, we can stitch all of our morphed images together into a given plane. Here are some results below:
+    </p>
+
+
+    <div style="text-align: center; padding-bottom: 1em; padding-top: 1em;">
+
+        <div style="display: flex; flex-direction: row; justify-content: center">
+            <div style="flex: 1; justify-content: center; vertical-align: center;">
+                <h3>Left</h3>
+            </div>
+            <div style="flex: 1; justify-content: center; vertical-align: center;">
+                <h3>Original Image</h3>
+            </div>
+            <div style="flex: 1; justify-content: center;">
+                <h3>Output Image </h3>
+            </div>
+            <div style="flex: 1; justify-content: center;">
+                <h3>Target Image Correspondence </h3>
+            </div>
+            
+        </div>
+
+        <div style="display: flex; flex-direction: row; justify-content: center">
+            <div style="flex: 1; justify-content: center; vertical-align: center;">
+                <p>Novel</p>
+            </div>
+            <div style="flex: 1; justify-content: center;">
+                <img src="pt1_images/angled_book2.jpeg">
+            </div>
+            <div style="flex: 1; justify-content: center;">
+                <img src="pt1_images/book_final.jpg">
+            </div>
+            <div style="flex: 1; justify-content: center;">
+                <img src="pt1_images/flat_book2.jpeg">
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: row; justify-content: center">
+            <div style="flex: 1; justify-content: center; vertical-align: center;">
+                <p>Physics Textbook</p>
+            </div>
+            <div style="flex: 1; justify-content: center;">
+                <img src="pt1_images/angled_physics.jpeg">
+            </div>
+            <div style="flex: 1; justify-content: center;">
+                <img src="pt1_images/final_physics2.jpg">
+            </div>
+            <div style="flex: 1; justify-content: center;">
+                <img src="pt1_images/flat_physics.jpeg">
+            </div>
+        </div>
+   
+    </div>
+
+
+
+
+
+    <h3 style="padding-top: 0.5em;">Sample Images</h3>
     <p>I took two images in my house of books at different angles to demonstrate an application of transformation images with homographies.</p>
         
     <div style="text-align: center; padding-bottom: 1em; padding-top: 1em;">
@@ -85,4 +199,4 @@ CS194 Project 5 - Nalin Chopra
             </div>
         </div>
    
-</div>
+    </div>
